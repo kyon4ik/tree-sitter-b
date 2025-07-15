@@ -355,11 +355,6 @@
     }
   },
   {
-    "type": "escape_sequence",
-    "named": true,
-    "fields": {}
-  },
-  {
     "type": "expression",
     "named": true,
     "fields": {},
@@ -855,10 +850,6 @@
     "named": false
   },
   {
-    "type": "0",
-    "named": false
-  },
-  {
     "type": ":",
     "named": false
   },
@@ -924,12 +915,12 @@
     "extra": true
   },
   {
-    "type": "e",
+    "type": "else",
     "named": false
   },
   {
-    "type": "else",
-    "named": false
+    "type": "escape_sequence",
+    "named": true
   },
   {
     "type": "extrn",
@@ -948,10 +939,6 @@
     "named": true
   },
   {
-    "type": "n",
-    "named": false
-  },
-  {
     "type": "name",
     "named": true
   },
@@ -961,10 +948,6 @@
   },
   {
     "type": "switch",
-    "named": false
-  },
-  {
-    "type": "t",
     "named": false
   },
   {

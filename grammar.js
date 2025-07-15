@@ -208,7 +208,7 @@ module.exports = grammar({
     char_constant: $ => seq(
       "'",
       repeat1(choice(
-        /[^'\n\r*]/,
+        /[^'\n*]/,
         $.escape_sequence
       )),
       "'"
@@ -217,13 +217,13 @@ module.exports = grammar({
     string_constant: $ => seq(
       '"',
       repeat(choice(
-        /[^"\n\r*]/,
+        /[^"\n*]/,
         $.escape_sequence
       )),
       '"'
     ),
 
-    escape_sequence: $ => seq('*', choice('0', 'e', '(', ')', 't', '*', "'", '"', 'n')),
+    escape_sequence: $ => token(seq('*', choice('0', 'e', '(', ')', 't', '*', "'", '"', 'n'))),
 
     name: $ => token(/[a-zA-Z_][a-zA-Z0-9_]*/),
 
