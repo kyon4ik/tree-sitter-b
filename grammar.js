@@ -33,7 +33,7 @@ module.exports = grammar({
     $.comment
   ],
 
-  word: $ => $.name,
+  word: $ => $.identifier,
 
   rules: {
     program: $ => repeat($.definition),
@@ -44,7 +44,7 @@ module.exports = grammar({
     ),
     
     vector_definition: $ => seq(
-      $.name,
+      field('name', $.identifier),
       optional(seq(
         '[',
         field('length', optional($.constant)),
@@ -55,14 +55,16 @@ module.exports = grammar({
     ),
 
     function_definition: $ => seq(
-      $.name,
-      '(',
-      field('parameters', sepBy(',', $.name)),
-      ')',
+      field('name', $.identifier),
+      field('parameters', $.parameters),
       field('body', $.statement)
     ),
 
-    immediate_value: $ => choice($.name, $.constant),
+    parameters: $ => seq(
+      '(', sepBy(',', $.identifier), ')'
+    ),
+
+    immediate_value: $ => choice($.identifier, $.constant),
     
     statement: $ => choice(
       $.auto_statement,
@@ -82,7 +84,7 @@ module.exports = grammar({
 
     return_statement: $ => seq('return', optional(seq('(', $.expression, ')')), ';'),
 
-    goto_statement: $ => seq('goto', field('label', $.name), ';'),
+    goto_statement: $ => seq('goto', field('label', $.identifier), ';'),
 
     switch_statement: $ => seq(
       'switch',
@@ -112,19 +114,19 @@ module.exports = grammar({
 
     auto_statement: $ => seq(
       'auto',
-      field('declarations', sepBy1(',', seq($.name, optional($.constant)))),
+      sepBy1(',', seq($.identifier, optional(field('length', $.constant)))),
       ';',
       $.statement
     ),
-
+    
     extern_statement: $ => seq(
       'extrn',
-      field('declarations', sepBy1(',', $.name)),
+      sepBy1(',', $.identifier),
       ';',
       $.statement
     ),
 
-    label_statement: $ => seq($.name, ':', $.statement),
+    label_statement: $ => seq($.identifier, ':', $.statement),
 
     case_statement: $ => seq('case', $.constant, ':', $.statement),
 
@@ -180,9 +182,10 @@ module.exports = grammar({
     call_expression: $ => prec.left(PREC.CALL, seq(
       field('callee', $.expression),
       '(',
-      field('arguments', sepBy(',', $.expression)),
+      sepBy(',', field('argument', $.expression)),
       ')'
     )),
+
     
     offset_expression: $ => prec.left(PREC.OFFSET, seq(
       field('base', $.expression),
@@ -192,7 +195,7 @@ module.exports = grammar({
     )),
 
     primary_expression: $ => choice(
-      $.name,
+      $.identifier,
       $.constant,
       seq('(', $.expression, ')')
     ),
@@ -225,7 +228,7 @@ module.exports = grammar({
 
     escape_sequence: $ => token(seq('*', choice('0', 'e', '(', ')', 't', '*', "'", '"', 'n'))),
 
-    name: $ => token(/[a-zA-Z_][a-zA-Z0-9_]*/),
+    identifier: $ => token(/[a-zA-Z_][a-zA-Z0-9_]*/),
 
     // http://stackoverflow.com/questions/13014947/regex-to-match-a-c-style-multiline-comment/36328890#36328890 
     comment: $ => token(seq(

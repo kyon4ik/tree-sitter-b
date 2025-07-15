@@ -39,29 +39,25 @@
     "type": "auto_statement",
     "named": true,
     "fields": {
-      "declarations": {
+      "length": {
         "multiple": true,
-        "required": true,
+        "required": false,
         "types": [
           {
-            "type": ",",
-            "named": false
-          },
-          {
             "type": "constant",
-            "named": true
-          },
-          {
-            "type": "name",
             "named": true
           }
         ]
       }
     },
     "children": {
-      "multiple": false,
+      "multiple": true,
       "required": true,
       "types": [
+        {
+          "type": "identifier",
+          "named": true
+        },
         {
           "type": "statement",
           "named": true
@@ -165,14 +161,10 @@
     "type": "call_expression",
     "named": true,
     "fields": {
-      "arguments": {
+      "argument": {
         "multiple": true,
         "required": false,
         "types": [
-          {
-            "type": ",",
-            "named": false
-          },
           {
             "type": "expression",
             "named": true
@@ -396,26 +388,15 @@
   {
     "type": "extern_statement",
     "named": true,
-    "fields": {
-      "declarations": {
-        "multiple": true,
-        "required": true,
-        "types": [
-          {
-            "type": ",",
-            "named": false
-          },
-          {
-            "type": "name",
-            "named": true
-          }
-        ]
-      }
-    },
+    "fields": {},
     "children": {
-      "multiple": false,
+      "multiple": true,
       "required": true,
       "types": [
+        {
+          "type": "identifier",
+          "named": true
+        },
         {
           "type": "statement",
           "named": true
@@ -437,30 +418,26 @@
           }
         ]
       },
-      "parameters": {
-        "multiple": true,
-        "required": false,
+      "name": {
+        "multiple": false,
+        "required": true,
         "types": [
           {
-            "type": ",",
-            "named": false
-          },
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      },
+      "parameters": {
+        "multiple": false,
+        "required": true,
+        "types": [
           {
-            "type": "name",
+            "type": "parameters",
             "named": true
           }
         ]
       }
-    },
-    "children": {
-      "multiple": false,
-      "required": true,
-      "types": [
-        {
-          "type": "name",
-          "named": true
-        }
-      ]
     }
   },
   {
@@ -472,7 +449,7 @@
         "required": true,
         "types": [
           {
-            "type": "name",
+            "type": "identifier",
             "named": true
           }
         ]
@@ -492,7 +469,7 @@
           "named": true
         },
         {
-          "type": "name",
+          "type": "identifier",
           "named": true
         }
       ]
@@ -507,7 +484,7 @@
       "required": true,
       "types": [
         {
-          "type": "name",
+          "type": "identifier",
           "named": true
         },
         {
@@ -544,6 +521,21 @@
     }
   },
   {
+    "type": "parameters",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "identifier",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "primary_expression",
     "named": true,
     "fields": {},
@@ -560,7 +552,7 @@
           "named": true
         },
         {
-          "type": "name",
+          "type": "identifier",
           "named": true
         }
       ]
@@ -750,17 +742,17 @@
             "named": true
           }
         ]
+      },
+      "name": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
       }
-    },
-    "children": {
-      "multiple": false,
-      "required": true,
-      "types": [
-        {
-          "type": "name",
-          "named": true
-        }
-      ]
     }
   },
   {
@@ -931,15 +923,15 @@
     "named": false
   },
   {
+    "type": "identifier",
+    "named": true
+  },
+  {
     "type": "if",
     "named": false
   },
   {
     "type": "integer_constant",
-    "named": true
-  },
-  {
-    "type": "name",
     "named": true
   },
   {
