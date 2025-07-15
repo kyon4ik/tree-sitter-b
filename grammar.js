@@ -65,42 +65,68 @@ module.exports = grammar({
     immediate_value: $ => choice($.name, $.constant),
     
     statement: $ => choice(
-      // Auto declaration
-      seq(
-        'auto',
-        sepBy1(',', seq($.name, optional($.constant))),
-        ';',
-        $.statement
-      ),
-      // External declaration
-      seq(
-        'extrn',
-        sepBy1(',', $.name),
-        ';',
-        $.statement
-      ),
-      // Label
-      seq($.name, ':', $.statement),
-      // Case
-      seq('case', $.constant, ':', $.statement),
-      // Compound statement
-      seq('{', repeat($.statement), '}'),
-      // Conditional statement
-      prec.right(seq(
-        'if', '(', $.expression, ')', $.statement,
-        optional(seq('else', $.statement)) 
-      )),
-      // While statement
-      seq('while', '(', $.expression, ')', $.statement),
-      // Switch statement
-      seq('switch', $.expression, $.statement),
-      // Goto
-      seq('goto', $.expression, ';'),
-      // Return
-      seq('return', optional(seq('(', $.expression, ')')), ';'),
-      // Expression
-      seq(optional($.expression), ';')
+      $.auto_statement,
+      $.extern_statement,
+      $.label_statement,
+      $.case_statement,
+      $.compound_statement,
+      $.conditional_statement,
+      $.while_statement,
+      $.switch_statement,
+      $.goto_statement,
+      $.return_statement,
+      $.semi_statement,
     ),
+
+    semi_statement: $ => seq(optional($.expression), ';'),
+
+    return_statement: $ => seq('return', optional(seq('(', $.expression, ')')), ';'),
+
+    goto_statement: $ => seq('goto', field('label', $.name), ';'),
+
+    switch_statement: $ => seq(
+      'switch',
+      field('condition', $.expression),
+      field('body', $.statement)
+    ),
+
+    while_statement: $ => seq(
+      'while', '(',
+      field('condition', $.expression),
+      ')',
+      field('body', $.statement)
+    ),
+
+    conditional_statement: $ => prec.right(seq(
+      'if', '(',
+      field('condition', $.expression),
+      ')',
+      field('consequence', $.statement),
+      optional(seq(
+        'else',
+        field('alternative', $.statement),
+      )) 
+    )),
+
+    compound_statement: $ => seq('{', repeat($.statement), '}'),
+
+    auto_statement: $ => seq(
+      'auto',
+      field('declarations', sepBy1(',', seq($.name, optional($.constant)))),
+      ';',
+      $.statement
+    ),
+
+    extern_statement: $ => seq(
+      'extrn',
+      field('declarations', sepBy1(',', $.name)),
+      ';',
+      $.statement
+    ),
+
+    label_statement: $ => seq($.name, ':', $.statement),
+
+    case_statement: $ => seq('case', $.constant, ':', $.statement),
 
     expression: $ => choice(
       $.assignment_expression,
@@ -199,7 +225,7 @@ module.exports = grammar({
 
     escape_sequence: $ => seq('*', choice('0', 'e', '(', ')', 't', '*', "'", '"', 'n')),
 
-    name: $ => token(/[a-zA-Z_][a-zA-Z0-9_]+/),
+    name: $ => token(/[a-zA-Z_][a-zA-Z0-9_]*/),
 
     // http://stackoverflow.com/questions/13014947/regex-to-match-a-c-style-multiline-comment/36328890#36328890 
     comment: $ => token(seq(
